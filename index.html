@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
-  <title>Hey Dario, bisch sicher? 🎄❤️</title>
+  <title>Hey Dario, bisch ready? 🎄❤️</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -22,17 +22,22 @@
       justify-content: center;
     }
 
-    .center {
-      text-align: center;
-      display: flex;
+    .screen {
+      display: none;
       flex-direction: column;
-      gap: 1.2rem;
+      gap: 1.3rem;
       align-items: center;
+      text-align: center;
       padding: 1.5rem;
+      max-width: 360px;
+    }
+
+    .show {
+      display: flex;
     }
 
     h1 {
-      font-size: 2rem;
+      font-size: 1.9rem;
       font-weight: 700;
       color: #e2e8f0;
       text-shadow: 0 0 8px rgba(0,0,0,0.7);
@@ -41,41 +46,33 @@
     p {
       font-size: 1rem;
       color: #cbd5e1;
-      max-width: 350px;
-      line-height: 1.4;
+      line-height: 1.45;
       text-shadow: 0 0 8px rgba(0,0,0,0.7);
     }
 
-    /* Blauer Ready-Button */
-    #startBtn {
+    button {
       border: none;
       border-radius: 999px;
-      padding: 0.85rem 2.4rem;
+      padding: 0.9rem 2.5rem;
       font-size: 1rem;
       cursor: pointer;
       font-weight: 600;
       background: linear-gradient(135deg, #3b82f6, #60a5fa);
       color: white;
       box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
-      transition: transform 0.1s ease, box-shadow 0.1s ease, opacity 0.2s;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
     }
 
-    #startBtn:hover {
+    button:hover {
       transform: translateY(-2px);
       box-shadow: 0 16px 45px rgba(0, 0, 0, 0.75);
     }
 
-    #startBtn:disabled {
-      opacity: 0.5;
-      cursor: default;
-      box-shadow: none;
-    }
-
     #videoWrapper {
+      display: none;
       position: fixed;
       inset: 0;
       background: black;
-      display: none; /* erst nach Klick sichtbar */
       align-items: center;
       justify-content: center;
     }
@@ -89,43 +86,68 @@
 
     #smallHint {
       position: absolute;
-      bottom: 10px;
+      bottom: 12px;
       left: 50%;
       transform: translateX(-50%);
       font-size: 0.8rem;
       color: #9ca3af;
-      text-shadow: 0 0 4px rgba(0,0,0,0.8);
       pointer-events: none;
+      text-shadow: 0 0 5px black;
     }
   </style>
 </head>
+
 <body>
 
-  <!-- Start-Screen -->
-  <div class="center" id="startScreen">
-    <h1>Hey Dario, bisch sicher? 🎄</h1>
-    <p>
-      Du bisch mehrfach gwarnt worde. Wenn s'Risiko trotzdem iigah wetsch, druck uf de Button.<br>
-      Merry X-Mas min Brüeder, I love you! ❤️
-    </p>
-    <button id="startBtn">Warnige ignoriere</button>
+  <!-- Screen 1 -->
+  <div class="screen show" id="s1">
+    <h1>🎅 Hey Dario, bisch sicher? 🎄</h1>
+    <p>Du bisch mehrfach gwarnt worde! 🎁</p>
+    <button onclick="next(1)">Ja, ich bin sicher</button>
   </div>
 
-  <!-- Video Fullscreen -->
+  <!-- Screen 2 -->
+  <div class="screen" id="s2">
+    <h1>🤶 Bisch der würkli sicher? 🎄</h1>
+    <button onclick="next(2)">Ja, ich bin sicher</button>
+  </div>
+
+  <!-- Screen 3 -->
+  <div class="screen" id="s3">
+    <h1>🎄 Also würkli würkli sicher? 🎅</h1>
+    <button onclick="next(3)">Jaaaaa mann</button>
+  </div>
+
+  <!-- Screen 4 -->
+  <div class="screen" id="s4">
+    <h1>🎁 Also würkli 100% sicher?? 🎄</h1>
+    <button onclick="next(4)">Zum letze Mal, "JA" verdammt!</button>
+  </div>
+
+  <!-- Screen 5 -->
+  <div class="screen" id="s5">
+    <h1>🎅 Was frögi di überhaupt no… 🎄</h1>
+    <p>
+      Du ignoriersch d’Warning sowieso 😂<br><br>
+      Wenn ready bisch, druck uf de Button. 🎁<br>
+      Merry X-Mas min Brüeder, I love you! ❤️✨
+    </p>
+    <button onclick="startVideo()">Alli Warnige ignoriere 🎄</button>
+  </div>
+
+  <!-- Video Wrapper -->
   <div id="videoWrapper">
     <video id="vid" controls playsinline>
-      <!-- 👉 HIER deinen GitHub-Link einsetzen -->
       <source src="https://raw.githubusercontent.com/luca-toni-89/images/main/Video.mp4" type="video/mp4" />
-      Din Browser unterstützt das Video-Format leider nöd.
     </video>
-    <div id="smallHint">Merry X-Mas min Brüeder ❤️</div>
+    <div id="smallHint">Du chasch stoppe & spule 🙂</div>
   </div>
 
   <script>
-    const startBtn     = document.getElementById("startBtn");
-    const startScreen  = document.getElementById("startScreen");
-    const videoWrapper = document.getElementById("videoWrapper");
-    const video        = document.getElementById("vid");
+    function next(n) {
+      document.getElementById("s" + n).classList.remove("show");
+      document.getElementById("s" + (n+1)).classList.add("show");
+    }
 
     async function enterFullscreen(el) {
       if (el.requestFullscreen) return el.requestFullscreen();
@@ -133,27 +155,21 @@
       if (el.webkitEnterFullscreen) return el.webkitEnterFullscreen();
     }
 
-    async function startExperience() {
+    async function startVideo() {
+      document.querySelectorAll(".screen").forEach(s => s.classList.remove("show"));
+      document.getElementById("videoWrapper").style.display = "flex";
+
+      const video = document.getElementById("vid");
+      video.muted = false;
+
       try {
-        startBtn.disabled = true;
-        startBtn.textContent = "Lädt…";
-
-        startScreen.style.display = "none";
-        videoWrapper.style.display = "flex";
-
-        video.muted = false;
-
-        await enterFullscreen(videoWrapper);
+        await enterFullscreen(document.getElementById("videoWrapper"));
         await video.play();
-      } catch (err) {
-        console.error("Fehler beim Start:", err);
-        videoWrapper.style.display = "flex";
-      } finally {
-        startBtn.disabled = false;
+      } catch (e) {
+        console.error(e);
       }
     }
-
-    startBtn.addEventListener("click", startExperience);
   </script>
+
 </body>
 </html>
