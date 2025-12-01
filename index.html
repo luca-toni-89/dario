@@ -2,23 +2,80 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
-  <title>Fullscreen Video</title>
+  <title>Hey Dario, bisch ready? 🎄❤️</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
+
     html, body {
       width: 100%;
       height: 100%;
-      background: black;
+      background: radial-gradient(circle at top, #020617, #000);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #e5e7eb;
       overflow: hidden;
-      font-family: system-ui, sans-serif;
     }
 
-    #wrapper {
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .center {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+      align-items: center;
+      padding: 1.5rem;
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #e2e8f0;
+      text-shadow: 0 0 8px rgba(0,0,0,0.7);
+    }
+
+    p {
+      font-size: 1rem;
+      color: #cbd5e1;
+      max-width: 350px;
+      line-height: 1.4;
+      text-shadow: 0 0 8px rgba(0,0,0,0.7);
+    }
+
+    /* Blauer Ready-Button */
+    #startBtn {
+      border: none;
+      border-radius: 999px;
+      padding: 0.85rem 2.4rem;
+      font-size: 1rem;
+      cursor: pointer;
+      font-weight: 600;
+      background: linear-gradient(135deg, #3b82f6, #60a5fa);
+      color: white;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+      transition: transform 0.1s ease, box-shadow 0.1s ease, opacity 0.2s;
+    }
+
+    #startBtn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 45px rgba(0, 0, 0, 0.75);
+    }
+
+    #startBtn:disabled {
+      opacity: 0.5;
+      cursor: default;
+      box-shadow: none;
+    }
+
+    #videoWrapper {
       position: fixed;
       inset: 0;
       background: black;
-      display: flex;
+      display: none; /* erst nach Klick sichtbar */
       align-items: center;
       justify-content: center;
     }
@@ -30,54 +87,73 @@
       background: black;
     }
 
-    #hint {
+    #smallHint {
       position: absolute;
-      bottom: 20px;
+      bottom: 10px;
       left: 50%;
       transform: translateX(-50%);
-      padding: 8px 16px;
-      background: rgba(0,0,0,0.5);
-      color: white;
-      border-radius: 999px;
-      font-size: 0.9rem;
+      font-size: 0.8rem;
+      color: #9ca3af;
+      text-shadow: 0 0 4px rgba(0,0,0,0.8);
       pointer-events: none;
     }
   </style>
 </head>
-
 <body>
-  <div id="wrapper">
-    <!-- kein autoplay, kein muted, kein loop -->
-    <video id="vid" controls playsinline>
-      <source src="DEIN-GITHUB-VIDEO-LINK.mov" type="video/mp4">
-      Dein Browser unterstützt das Video-Format nicht.
-    </video>
 
-    <div id="hint">Tippe / klicke ins Video für Fullscreen 🔊</div>
+  <!-- Start-Screen -->
+  <div class="center" id="startScreen">
+    <h1>Hey Dario, bisch ready? 🎄</h1>
+    <p>
+      Sobald du bereit bisch, druck uf de Button.<br>
+      Merry X-Mas min Brüeder, I love you! ❤️
+    </p>
+    <button id="startBtn">ready</button>
+  </div>
+
+  <!-- Video Fullscreen -->
+  <div id="videoWrapper">
+    <video id="vid" controls playsinline>
+      <!-- 👉 HIER deinen GitHub-Link einsetzen -->
+      <source src="https://github.com/luca-toni-89/images/raw/refs/heads/main/Video.mp4" type="video/mp4" />
+      Din Browser unterstützt das Video-Format leider nöd.
+    </video>
+    <div id="smallHint">Du chasch stoppe & spule 🙂</div>
   </div>
 
   <script>
-    const video = document.getElementById("vid");
-    const hint  = document.getElementById("hint");
+    const startBtn     = document.getElementById("startBtn");
+    const startScreen  = document.getElementById("startScreen");
+    const videoWrapper = document.getElementById("videoWrapper");
+    const video        = document.getElementById("vid");
 
-    async function goFullscreenOnFirstPlay() {
-      try {
-        // Beim ersten Play-Klick Fullscreen versuchen
-        if (!document.fullscreenElement) {
-          await document.documentElement.requestFullscreen();
-        }
-        // Hinweis ausblenden
-        if (hint) hint.style.display = "none";
-      } catch (err) {
-        console.log("Fullscreen nicht möglich:", err);
-      }
-
-      // Listener danach entfernen, wir wollen das nur einmal
-      video.removeEventListener("play", goFullscreenOnFirstPlay);
+    async function enterFullscreen(el) {
+      if (el.requestFullscreen) return el.requestFullscreen();
+      if (el.webkitRequestFullscreen) return el.webkitRequestFullscreen();
+      if (el.webkitEnterFullscreen) return el.webkitEnterFullscreen();
     }
 
-    // Wenn der User das erste Mal Play drückt → Fullscreen
-    video.addEventListener("play", goFullscreenOnFirstPlay);
+    async function startExperience() {
+      try {
+        startBtn.disabled = true;
+        startBtn.textContent = "Lädt…";
+
+        startScreen.style.display = "none";
+        videoWrapper.style.display = "flex";
+
+        video.muted = false;
+
+        await enterFullscreen(videoWrapper);
+        await video.play();
+      } catch (err) {
+        console.error("Fehler beim Start:", err);
+        videoWrapper.style.display = "flex";
+      } finally {
+        startBtn.disabled = false;
+      }
+    }
+
+    startBtn.addEventListener("click", startExperience);
   </script>
 </body>
 </html>
