@@ -20,6 +20,25 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      position: relative; /* ❄️ wichtig für Schneeflocken */
+    }
+
+    /* ❄️ SNOWFLAKE BASE STYLE */
+    .snowflake {
+      position: fixed;
+      top: -10px;
+      color: white;
+      font-size: 1.2rem;
+      opacity: 0.8;
+      pointer-events: none;
+      animation-name: fall;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+    }
+
+    @keyframes fall {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(110vh); }
     }
 
     .screen {
@@ -30,6 +49,7 @@
       text-align: center;
       padding: 1.5rem;
       max-width: 360px;
+      z-index: 2; /* ❄️ damit Flocken hinter dem Text bleiben */
     }
 
     .show {
@@ -75,13 +95,13 @@
       background: black;
       align-items: center;
       justify-content: center;
+      z-index: 5; /* Video soll über Schnee liegen */
     }
 
     video {
       width: 100vw;
       height: 100vh;
       object-fit: cover;
-      background: black;
     }
 
     #smallHint {
@@ -91,13 +111,16 @@
       transform: translateX(-50%);
       font-size: 0.8rem;
       color: #9ca3af;
-      pointer-events: none;
       text-shadow: 0 0 5px black;
+      pointer-events: none;
     }
   </style>
 </head>
 
 <body>
+
+  <!-- ❄️ SNOW CONTAINER (JS erzeugt Flocken automatisch) -->
+  <div id="snow"></div>
 
   <!-- Screen 1 -->
   <div class="screen show" id="s1">
@@ -135,7 +158,7 @@
     <button onclick="startVideo()">Alli Warnige ignoriere 🎄</button>
   </div>
 
-  <!-- Video Wrapper -->
+  <!-- Video Screen -->
   <div id="videoWrapper">
     <video id="vid" controls playsinline>
       <source src="https://raw.githubusercontent.com/luca-toni-89/images/main/Video.mp4" type="video/mp4" />
@@ -157,6 +180,7 @@
 
     async function startVideo() {
       document.querySelectorAll(".screen").forEach(s => s.classList.remove("show"));
+      document.getElementById("snow").style.display = "none"; // Schnee aus im Video
       document.getElementById("videoWrapper").style.display = "flex";
 
       const video = document.getElementById("vid");
@@ -168,6 +192,23 @@
       } catch (e) {
         console.error(e);
       }
+    }
+
+    /* ❄️ SNOW GENERATOR */
+    const snowContainer = document.getElementById("snow");
+    const snowCount = 35;
+
+    for (let i = 0; i < snowCount; i++) {
+      let flake = document.createElement("div");
+      flake.className = "snowflake";
+      flake.innerHTML = "❄️";
+
+      flake.style.left = Math.random() * 100 + "vw";
+      flake.style.fontSize = (Math.random() * 14 + 10) + "px";
+      flake.style.animationDuration = (Math.random() * 6 + 5) + "s";
+      flake.style.animationDelay = Math.random() * 5 + "s";
+
+      snowContainer.appendChild(flake);
     }
   </script>
 
