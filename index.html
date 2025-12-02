@@ -20,10 +20,10 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      position: relative; /* ❄️ wichtig für Schneeflocken */
+      position: relative; /* für Schneeflocken */
     }
 
-    /* ❄️ SNOWFLAKE BASE STYLE */
+    /* ❄️ Schneeflocken */
     .snowflake {
       position: fixed;
       top: -10px;
@@ -49,7 +49,9 @@
       text-align: center;
       padding: 1.5rem;
       max-width: 360px;
-      z-index: 2; /* ❄️ damit Flocken hinter dem Text bleiben */
+      z-index: 2;          /* über Schnee */
+      position: relative;  /* wichtig für springenden Button in Screen 4 */
+      min-height: 260px;
     }
 
     .show {
@@ -95,7 +97,7 @@
       background: black;
       align-items: center;
       justify-content: center;
-      z-index: 5; /* Video soll über Schnee liegen */
+      z-index: 5; /* über allem */
     }
 
     video {
@@ -119,7 +121,7 @@
 
 <body>
 
-  <!-- ❄️ SNOW CONTAINER (JS erzeugt Flocken automatisch) -->
+  <!-- Schneeflocken-Container -->
   <div id="snow"></div>
 
   <!-- Screen 1 -->
@@ -141,10 +143,10 @@
     <button onclick="next(3)">Jaaaaa mann</button>
   </div>
 
-  <!-- Screen 4 -->
+  <!-- Screen 4 (mit springendem Button) -->
   <div class="screen" id="s4">
     <h1>🎁 Also würkli 100% sicher?? 🎄</h1>
-    <button onclick="next(4)">Zum letze Mal, "JA" verdammt!</button>
+    <button id="btn4" onclick="prankClick()">Zum letze Mal, "JA" verdammt!</button>
   </div>
 
   <!-- Screen 5 -->
@@ -209,6 +211,36 @@
       flake.style.animationDelay = Math.random() * 5 + "s";
 
       snowContainer.appendChild(flake);
+    }
+
+    /* 🤡 Springender Button auf Screen 4 */
+    let jumpCount = 0;
+    const maxJumps = 5;
+
+    function prankClick() {
+      const btn = document.getElementById("btn4");
+      const screen = document.getElementById("s4");
+
+      if (jumpCount < maxJumps) {
+        // Button springen lassen
+        const rect = screen.getBoundingClientRect();
+        const btnRect = btn.getBoundingClientRect();
+
+        const maxLeft = rect.width - btnRect.width - 20;
+        const maxTop  = rect.height - btnRect.height - 20;
+
+        const left = Math.random() * maxLeft;
+        const top  = Math.random() * maxTop;
+
+        btn.style.position = "absolute";
+        btn.style.left = left + "px";
+        btn.style.top  = top + "px";
+
+        jumpCount++;
+      } else {
+        // Nach 5 Sprüngen normal weiter zu Screen 5
+        next(4);
+      }
     }
   </script>
 
