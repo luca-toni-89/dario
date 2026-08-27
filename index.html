@@ -88,10 +88,9 @@ h2{font-size:clamp(3rem,8vw,6.1rem);max-width:760px}
 .success-vault-door::before{content:"";position:absolute;inset:18%;border:2px dashed rgba(227,185,85,.55);border-radius:50%}
 .success-vault-handle{width:48%;height:7px;z-index:1;border-radius:8px;background:linear-gradient(90deg,#756a4e,var(--gold-light),#756a4e)}
 .success-vault-handle::after{content:"";display:block;width:7px;height:112px;margin:-53px auto;border-radius:8px;background:inherit}
-.success-vault-label{z-index:-1;max-width:150px;color:var(--gold-light);font:700 1rem/1.4 var(--display);letter-spacing:.12em;text-transform:uppercase}
+.vault-gift{display:none;z-index:0;max-width:160px;text-align:center}
+.vault-gift.visible{display:inline-block;animation:reveal .55s ease both}
 .success-vault.open .success-vault-door{transform:perspective(650px) rotateY(-105deg);opacity:.12}
-.download{display:none;font-size:.82rem;text-decoration:none}
-.download.visible{display:inline-block;animation:reveal .55s ease both}
 .fineprint{color:var(--muted);font-size:.67rem;max-width:600px;line-height:1.6}
 .timer-wrap{display:none;align-items:center;gap:.65rem;color:var(--muted)}
 .timer-wrap.visible{display:flex}
@@ -129,14 +128,22 @@ h2{font-size:clamp(3rem,8vw,6.1rem);max-width:760px}
 <body>
 <div class="shell">
 <div class="grid" aria-hidden="true"></div>
+
 <header class="topbar">
 <div class="brand">
 <div class="brand-mark"><span>FK</span></div>
-<div class="brand-copy"><strong>Fort Knox</strong><small>Private Security Division</small></div>
+<div class="brand-copy">
+<strong>Fort Knox</strong>
+<small>Private Security Division</small>
+</div>
 </div>
 <div class="status">
-<div class="timer-wrap" id="timerWrap"><span>Restzeit</span><b class="timer-ring" id="timer">60</b></div>
-<i class="status-dot"></i><span id="systemStatus">System online</span>
+<div class="timer-wrap" id="timerWrap">
+<span>Restzeit</span>
+<b class="timer-ring" id="timer">60</b>
+</div>
+<i class="status-dot"></i>
+<span id="systemStatus">System online</span>
 </div>
 </header>
 
@@ -145,7 +152,14 @@ h2{font-size:clamp(3rem,8vw,6.1rem);max-width:760px}
 <div class="hero-copy">
 <span class="eyebrow">Operation Geschenk</span>
 <h1>Nur die Besten <em>kommen rein.</em></h1>
-<p class="lede">Dario, dein Geschenk liegt im sichersten digitalen Tresor der Welt. Zwanzig Sicherheitsebenen stehen zwischen dir und der Beute. Für jede bleiben dir exakt 60 Sekunden. Ein Fehler – und das System setzt dich gnadenlos auf null.</p>
+<p class="lede">
+Dario und Marina, ein kleines Geschenk zu eurer Verlobung erwartet euch.
+Doch wie so oft im Leben wird einem nichts einfach geschenkt:
+Ihr müsst euch euer Geschenk aus dem sichersten digitalen Tresor der Welt
+stehlen. Zwanzig Sicherheitsebenen stehen zwischen euch und der Beute.
+Für jede bleiben euch exakt 60 Sekunden. Ein Fehler – und das System setzt
+euch gnadenlos auf null.
+</p>
 <div class="hero-meta">
 <span><i>◆</i> 20 Hürden</span>
 <span><i>◆</i> 60 Sekunden</span>
@@ -153,7 +167,9 @@ h2{font-size:clamp(3rem,8vw,6.1rem);max-width:760px}
 </div>
 <button class="btn" id="startButton">Mission starten</button>
 </div>
-<div class="vault" aria-hidden="true"><div class="vault-handle"></div></div>
+<div class="vault" aria-hidden="true">
+<div class="vault-handle"></div>
+</div>
 </section>
 
 <section class="screen mission" data-screen="mission">
@@ -164,7 +180,10 @@ h2{font-size:clamp(3rem,8vw,6.1rem);max-width:760px}
 <p class="lede briefing" id="missionBriefing"></p>
 </div>
 <form class="terminal" id="terminal" autocomplete="off">
-<div class="terminal-head"><span id="terminalId">Terminal 01</span><span>Verschlüsselt</span></div>
+<div class="terminal-head">
+<span id="terminalId">Terminal 01</span>
+<span>Verschlüsselt</span>
+</div>
 <div class="question" id="question"></div>
 <div id="answerArea"></div>
 </form>
@@ -174,55 +193,241 @@ h2{font-size:clamp(3rem,8vw,6.1rem);max-width:760px}
 <div class="seal">✓</div>
 <span class="eyebrow">Tresor entriegelt</span>
 <h1>Mission <em>erfüllt.</em></h1>
-<p class="lede">Lieber Dario, liebe Marina. Ihr seid Meistereinbrecher – saubere Leistung! Ganz herzliche Gratulation zu eurer Verlobung. Ihr dürft jetzt das Geschenk aus dem Tresor abholen.</p>
-<button class="success-vault" id="successVault" type="button" aria-label="Tresor langsam öffnen" aria-expanded="false">
-<span class="success-vault-label">Tresor anklicken</span>
-<span class="success-vault-door" aria-hidden="true"><i class="success-vault-handle"></i></span>
-</button>
-<a class="btn download" id="giftButton" href="gutschein.pdf" target="_blank" rel="noopener">Geschenk abholen</a>
-<p class="fineprint">Klickt auf den Tresor. Sobald er vollständig geöffnet ist, wird euer Geschenk freigegeben.</p>
+<p class="lede">
+Lieber Dario, liebe Marina. Ihr seid Meistereinbrecher – saubere Leistung!
+Ganz herzliche Gratulation zu eurer Verlobung. Ihr dürft jetzt das Geschenk
+aus dem Tresor abholen.
+</p>
+<div
+class="success-vault"
+id="successVault"
+role="button"
+tabindex="0"
+aria-label="Tresor langsam öffnen"
+aria-expanded="false"
+>
+<a
+class="btn vault-gift"
+id="giftButton"
+href="gutschein.pdf"
+target="_blank"
+rel="noopener"
+>
+Geschenk abholen
+</a>
+<span class="success-vault-door" aria-hidden="true">
+<i class="success-vault-handle"></i>
+</span>
+</div>
+<p class="fineprint">
+Klickt auf den Tresor. Sobald er vollständig geöffnet ist, wird euer
+Geschenk freigegeben.
+</p>
 </section>
 </main>
 
 <footer class="footer">
 <span>FK-XMAS // CLASSIFIED</span>
-<div class="progress" aria-label="Fortschritt"><i class="progress-bar" id="progressBar"></i></div>
+<div class="progress" aria-label="Fortschritt">
+<i class="progress-bar" id="progressBar"></i>
+</div>
 <span id="progressText">00 / 20</span>
 </footer>
 </div>
 
-<div class="alert" id="failure" role="dialog" aria-modal="true" aria-labelledby="failureTitle">
+<div
+class="alert"
+id="failure"
+role="dialog"
+aria-modal="true"
+aria-labelledby="failureTitle"
+>
 <div class="alert-card">
 <div class="alert-icon">×</div>
 <span class="eyebrow">Sicherheitsverletzung</span>
 <h2 id="failureTitle">Zugriff verweigert</h2>
-<p>Falsche Antwort. Der Tresor wurde automatisch verriegelt und sämtlicher Fortschritt vernichtet. Du kennst die Regeln: zurück auf Anfang.</p>
-<button class="btn ghost" id="restartButton">Von vorne beginnen</button>
+<p>
+Falsche Antwort. Der Tresor wurde automatisch verriegelt und sämtlicher
+Fortschritt vernichtet. Ihr kennt die Regeln: zurück auf Anfang.
+</p>
+<button class="btn ghost" id="restartButton">
+Von vorne beginnen
+</button>
 </div>
 </div>
 
 <script>
 const missions=[
-{title:"Identifikation",briefing:"Das System verlangt Gewissheit, ehe es dich hineinlässt.",question:"Wie lautet der Vorname des Agenten vor diesem Terminal?",type:"text",placeholder:"DEIN VORNAME",answers:["dario"],hint:"Du solltest ihn kennen. Du trägst ihn."},
-{title:"Zahlenraum",briefing:"Nicht alles ist Mathematik. Manchmal genügt es, genau hinzusehen.",question:'Wenn <strong>GOLD = 4</strong> und <strong>TRESOR = 6</strong>, welchen Wert trägt <span class="big-code">GESCHENK?</span>',type:"text",placeholder:"ZAHL",answers:["8","acht"]},
-{title:"Musterbruch",briefing:"Die Differenz wächst. Erkenne den Rhythmus, bevor die Uhr ihn beendet.",question:'<span class="big-code">2 · 6 · 12 · 20 · 30 · ?</span>',type:"text",placeholder:"NÄCHSTE ZAHL",answers:["42","zweiundvierzig"]},
-{title:"Funkprotokoll",briefing:"Eine Nachricht wurde um einen Buchstaben nach vorn verschoben.",question:'Entschlüssle das Codewort:<span class="big-code">WFSMPCVOH</span>',type:"text",placeholder:"CODEWORT",answers:["verlobung"],hint:"Manchmal ist ein Schritt zurück die bessere Wahl."},
-{title:"Laserfeld",briefing:"Ein falscher Kontakt, und die gesamte Anlage erwacht.",question:"Berühre die Sensoren vom kleinsten zum grössten Wert.",type:"sequence",values:["19","03","27","11"],answer:["03","11","19","27"],hint:"Aufsteigend – nicht in der angezeigten Reihenfolge."},
-{title:"Impulskontrolle",briefing:"Fort Knox misst nicht nur Wissen, sondern Nerven.",question:"Warte auf das grüne Signal. Klicke weder davor noch zu spät.",type:"reaction",hint:"Geduld. Erst handeln, wenn das Feld grün wird."},
-{title:"Wortschlüssel",briefing:"Die Anfangsbuchstaben bewachen das nächste Tor.",question:'<span>Gold ruht unter schwarzem Stahl.</span><span>Welches Wort bilden die Anfangsbuchstaben?</span>',type:"text",placeholder:"FÜNF BUCHSTABEN",answers:["gruss","gruß"]},
-{title:"Gedächtniskammer",briefing:"Beobachte die Lichtfolge. Wiederhole sie exakt.",question:"Präge dir fünf Signale ein.",type:"memory",pattern:[2,0,4,1,5],hint:"Die Folge wird nur einmal gezeigt. Konzentriere dich."},
-{title:"Der Wächter",briefing:"Ein altes Rätsel trennt Gäste von Eindringlingen.",question:"Was wird grösser, je mehr man davon wegnimmt?",type:"choice",choices:["Ein Schatten","Ein Loch","Die Zeit","Ein Geheimnis"],answer:"Ein Loch",hint:"Nicht alles wächst, indem man etwas hinzufügt."},
-{title:"Fluchtkorridor",briefing:"Springe über die Sperren. Drei trefferlose Passagen öffnen die Schleuse.",question:"Überlebe den Sicherheitskorridor.",type:"runner",target:3,hint:"Klicke auf SPRINGEN oder drücke die Leertaste kurz vor der Sperre."},
-{title:"Spiegelcode",briefing:"Der Code zeigt sein wahres Gesicht erst rückwärts.",question:'Drehe die Zeichenfolge um:<span class="big-code">7391</span>',type:"text",placeholder:"SPIEGELCODE",answers:["1937"]},
-{title:"Zahlenschloss",briefing:"Drei Ziffern bewachen die Kammer. Jede Aussage führt eindeutig zum selben Code.",question:"Gesucht ist eine dreistellige Zahl:<br>Die Hunderterziffer ist doppelt so gross wie die Einerziffer.<br>Die Zehnerziffer ist eins kleiner als die Hunderterziffer.<br>Die Quersumme beträgt 9.",type:"text",placeholder:"DREISTELLIGER CODE",answers:["432","vierhundertzweiunddreissig","vierhundertzweiunddreißig"],hint:"Beginne bei der Einerziffer. Ist sie 2, ergeben sich daraus 4 Hunderter und 3 Zehner."},
-{title:"Primzahl-Tor",briefing:"Zusammengesetzte Zahlen werden vom Scanner vernichtet.",question:'Welche Zahl passt nicht?<span class="big-code">11 · 13 · 17 · 21 · 23</span>',type:"text",placeholder:"AUSREISSER",answers:["21","einundzwanzig"],hint:"Vier Zahlen sind nur durch 1 und sich selbst teilbar."},
-{title:"Zweiter Impuls",briefing:"Diesmal kennt das System deinen Reflex. Es wird dich länger warten lassen.",question:"Klicke erst, sobald das Feld grün leuchtet.",type:"reaction",delayMin:2800,delayMax:5200,hint:"Wer zu früh handelt, beginnt wieder bei Hürde eins."},
-{title:"Alphabet-Tresor",briefing:"Der Scanner hat ein Wort in seine Buchstabenpositionen zerlegt.",question:'Wenn A = 1, B = 2 und C = 3, welches Wort verbirgt sich hier?<span class="big-code">19 · 20 · 1 · 8 · 12</span>',type:"text",placeholder:"CODEWORT",answers:["stahl"],hint:"Suche jeden Zahlenwert im Alphabet: 19 ist S, 20 ist T und 1 ist A."},
-{title:"Gedächtnis II",briefing:"Sechs Lichter. Ein Blick. Keine zweite Chance.",question:"Wiederhole die verschärfte Signalsequenz.",type:"memory",pattern:[5,2,3,0,4,1],hint:"Gib jedem Feld im Kopf eine Zahl von 1 bis 6."},
-{title:"Uhrenkammer",briefing:"Der Tresor denkt in Winkeln, nicht in Stunden.",question:"Wie gross ist der kleinere Winkel zwischen den Zeigern um genau 3:00 Uhr?",type:"text",placeholder:"GRADZAHL",answers:["90","90 grad","neunzig"],hint:"Eine volle Uhr besitzt 360 Grad und zwölf Stundenpositionen."},
-{title:"Schattensprung",briefing:"Der letzte Korridor ist schneller. Vier Sperren trennen dich vom Kern.",question:"Überwinde vier Hochsicherheitsbarrieren.",type:"runner",target:4,speed:1.28,startDelay:1800,hint:"Nicht hektisch klicken. Ein Sprung dauert etwas mehr als eine halbe Sekunde."},
-{title:"Dreifachschloss",briefing:"Drei Ergebnisse aus deiner Reise bilden den Vorcode.",question:"Addiere: Buchstaben in GESCHENK + nächste Zahl der Reihe + Winkel der Uhr.",type:"text",placeholder:"VORCODE",answers:["140","einhundertvierzig"]},
-{title:"Die letzte Hürde",briefing:"Ihr habt es fast geschafft. Noch eine Rechnung trennt euch vom Tresor.",question:'Ein Tresor enthält eine unbekannte Anzahl Goldmünzen. Der erste Wächter nimmt <strong>ein Drittel aller Münzen und zusätzlich 4</strong>. Der zweite Wächter nimmt danach <strong>die Hälfte der verbliebenen Münzen</strong>. Am Ende liegen noch <strong>14 Münzen</strong> im Tresor.<br><span class="big-code">Wie viele waren es am Anfang?</span>',type:"text",placeholder:"ANZAHL GOLDMÜNZEN",answers:["48","achtundvierzig"]}
+{
+title:"Identifikation",
+briefing:"Das System verlangt Gewissheit, ehe es euch hineinlässt.",
+question:"Wie lautet der Vorname des männlichen Agenten vor diesem Terminal?",
+type:"text",
+placeholder:"VORNAME",
+answers:["dario"],
+hint:"Ihr solltet ihn kennen."
+},
+{
+title:"Zahlenraum",
+briefing:"Nicht alles ist Mathematik. Manchmal genügt es, genau hinzusehen.",
+question:'Wenn <strong>GOLD = 4</strong> und <strong>TRESOR = 6</strong>, welchen Wert trägt <span class="big-code">GESCHENK?</span>',
+type:"text",
+placeholder:"ZAHL",
+answers:["8","acht"]
+},
+{
+title:"Musterbruch",
+briefing:"Die Differenz wächst. Erkennt den Rhythmus, bevor die Uhr ihn beendet.",
+question:'<span class="big-code">2 · 6 · 12 · 20 · 30 · ?</span>',
+type:"text",
+placeholder:"NÄCHSTE ZAHL",
+answers:["42","zweiundvierzig"]
+},
+{
+title:"Funkprotokoll",
+briefing:"Eine Nachricht wurde um einen Buchstaben nach vorn verschoben.",
+question:'Entschlüsselt das Codewort:<span class="big-code">WFSMPCVOH</span>',
+type:"text",
+placeholder:"CODEWORT",
+answers:["verlobung"],
+hint:"Manchmal ist ein Schritt zurück die bessere Wahl."
+},
+{
+title:"Laserfeld",
+briefing:"Ein falscher Kontakt, und die gesamte Anlage erwacht.",
+question:"Berührt die Sensoren vom kleinsten zum grössten Wert.",
+type:"sequence",
+values:["19","03","27","11"],
+answer:["03","11","19","27"],
+hint:"Aufsteigend – nicht in der angezeigten Reihenfolge."
+},
+{
+title:"Impulskontrolle",
+briefing:"Fort Knox misst nicht nur Wissen, sondern Nerven.",
+question:"Wartet auf das grüne Signal. Klickt weder davor noch zu spät.",
+type:"reaction",
+hint:"Geduld. Erst handeln, wenn das Feld grün wird."
+},
+{
+title:"Wortschlüssel",
+briefing:"Die Anfangsbuchstaben bewachen das nächste Tor.",
+question:'<span>Gold ruht unter schwarzem Stahl.</span><span>Welches Wort bilden die Anfangsbuchstaben?</span>',
+type:"text",
+placeholder:"FÜNF BUCHSTABEN",
+answers:["gruss","gruß"]
+},
+{
+title:"Gedächtniskammer",
+briefing:"Beobachtet die Lichtfolge. Wiederholt sie exakt.",
+question:"Prägt euch fünf Signale ein.",
+type:"memory",
+pattern:[2,0,4,1,5],
+hint:"Die Folge wird nur einmal gezeigt. Konzentriert euch."
+},
+{
+title:"Der Wächter",
+briefing:"Ein altes Rätsel trennt Gäste von Eindringlingen.",
+question:"Was wird grösser, je mehr man davon wegnimmt?",
+type:"choice",
+choices:["Ein Schatten","Ein Loch","Die Zeit","Ein Geheimnis"],
+answer:"Ein Loch",
+hint:"Nicht alles wächst, indem man etwas hinzufügt."
+},
+{
+title:"Fluchtkorridor",
+briefing:"Springt über die Sperren. Drei trefferlose Passagen öffnen die Schleuse.",
+question:"Überlebt den Sicherheitskorridor.",
+type:"runner",
+target:3,
+hint:"Klickt auf SPRINGEN oder drückt die Leertaste kurz vor der Sperre."
+},
+{
+title:"Spiegelcode",
+briefing:"Der Code zeigt sein wahres Gesicht erst rückwärts.",
+question:'Dreht die Zeichenfolge um:<span class="big-code">7391</span>',
+type:"text",
+placeholder:"SPIEGELCODE",
+answers:["1937"]
+},
+{
+title:"Zahlenschloss",
+briefing:"Drei Ziffern bewachen die Kammer. Jede Aussage führt eindeutig zum selben Code.",
+question:"Gesucht ist eine dreistellige Zahl:<br>Die Hunderterziffer ist doppelt so gross wie die Einerziffer.<br>Die Zehnerziffer ist eins kleiner als die Hunderterziffer.<br>Die Quersumme beträgt 9.",
+type:"text",
+placeholder:"DREISTELLIGER CODE",
+answers:["432","vierhundertzweiunddreissig","vierhundertzweiunddreißig"],
+hint:"Beginnt bei der Einerziffer. Ist sie 2, ergeben sich daraus 4 Hunderter und 3 Zehner."
+},
+{
+title:"Primzahl-Tor",
+briefing:"Zusammengesetzte Zahlen werden vom Scanner vernichtet.",
+question:'Welche Zahl passt nicht?<span class="big-code">11 · 13 · 17 · 21 · 23</span>',
+type:"text",
+placeholder:"AUSREISSER",
+answers:["21","einundzwanzig"],
+hint:"Vier Zahlen sind nur durch 1 und sich selbst teilbar."
+},
+{
+title:"Zweiter Impuls",
+briefing:"Diesmal kennt das System eure Reflexe. Es wird euch länger warten lassen.",
+question:"Klickt erst, sobald das Feld grün leuchtet.",
+type:"reaction",
+delayMin:2800,
+delayMax:5200,
+hint:"Wer zu früh handelt, beginnt wieder bei Hürde eins."
+},
+{
+title:"Alphabet-Tresor",
+briefing:"Der Scanner hat ein Wort in seine Buchstabenpositionen zerlegt.",
+question:'Wenn A = 1, B = 2 und C = 3, welches Wort verbirgt sich hier?<span class="big-code">19 · 20 · 1 · 8 · 12</span>',
+type:"text",
+placeholder:"CODEWORT",
+answers:["stahl"],
+hint:"Sucht jeden Zahlenwert im Alphabet: 19 ist S, 20 ist T und 1 ist A."
+},
+{
+title:"Gedächtnis II",
+briefing:"Sechs Lichter. Ein Blick. Keine zweite Chance.",
+question:"Wiederholt die verschärfte Signalsequenz.",
+type:"memory",
+pattern:[5,2,3,0,4,1],
+hint:"Gebt jedem Feld im Kopf eine Zahl von 1 bis 6."
+},
+{
+title:"Uhrenkammer",
+briefing:"Der Tresor denkt in Winkeln, nicht in Stunden.",
+question:"Wie gross ist der kleinere Winkel zwischen den Zeigern um genau 3:00 Uhr?",
+type:"text",
+placeholder:"GRADZAHL",
+answers:["90","90 grad","neunzig"],
+hint:"Eine volle Uhr besitzt 360 Grad und zwölf Stundenpositionen."
+},
+{
+title:"Schattensprung",
+briefing:"Der letzte Korridor ist schneller. Vier Sperren trennen euch vom Kern.",
+question:"Überwindet vier Hochsicherheitsbarrieren.",
+type:"runner",
+target:4,
+speed:1.28,
+startDelay:1800,
+hint:"Nicht hektisch klicken. Ein Sprung dauert etwas mehr als eine halbe Sekunde."
+},
+{
+title:"Dreifachschloss",
+briefing:"Drei Ergebnisse aus eurer Reise bilden den Vorcode.",
+question:"Addiert: Buchstaben in GESCHENK + nächste Zahl der Reihe + Winkel der Uhr.",
+type:"text",
+placeholder:"VORCODE",
+answers:["140","einhundertvierzig"]
+},
+{
+title:"Die letzte Hürde",
+briefing:"Ihr habt es fast geschafft. Noch eine Rechnung trennt euch vom Tresor.",
+question:'Ein Tresor enthält eine unbekannte Anzahl Goldmünzen. Der erste Wächter nimmt <strong>ein Drittel aller Münzen und zusätzlich 4</strong>. Der zweite Wächter nimmt danach <strong>die Hälfte der verbliebenen Münzen</strong>. Am Ende liegen noch <strong>14 Münzen</strong> im Tresor.<br><span class="big-code">Wie viele waren es am Anfang?</span>',
+type:"text",
+placeholder:"ANZAHL GOLDMÜNZEN",
+answers:["48","achtundvierzig"]
+}
 ];
 
 const screens=[...document.querySelectorAll(".screen")];
@@ -242,9 +447,16 @@ let jumpAction=()=>{};
 
 function showScreen(name){
 screens.forEach(screen=>{
-screen.classList.toggle("active",screen.dataset.screen===name);
+screen.classList.toggle(
+"active",
+screen.dataset.screen===name
+);
 });
-window.scrollTo({top:0,behavior:"smooth"});
+
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
 }
 
 function normalize(value){
@@ -256,10 +468,13 @@ return String(value)
 }
 
 function updateProgress(done=current){
+const percentage=done/missions.length*100;
+
 document.getElementById("progressBar").style.width=
-`${done/missions.length*100}%`;
+percentage+"%";
+
 document.getElementById("progressText").textContent=
-`${String(done).padStart(2,"0")} / 20`;
+String(done).padStart(2,"0")+" / 20";
 }
 
 function spaceJump(event){
@@ -272,17 +487,22 @@ jumpAction();
 function stopTask(){
 clearInterval(countdown);
 countdown=null;
+
 cleanupTask();
 cleanupTask=()=>{};
+
 document.removeEventListener("keydown",spaceJump);
 }
 
 function startTimer(mission){
 clearInterval(countdown);
+
 timerWrap.classList.toggle("visible",!mission.final);
 timerEl.classList.remove("danger");
 
-if(mission.final)return;
+if(mission.final){
+return;
+}
 
 seconds=60;
 timerEl.textContent=seconds;
@@ -299,13 +519,21 @@ fail("Zeit abgelaufen");
 }
 
 function hintHtml(mission){
-return mission.hint
-?`<div class="hint"><strong>HINWEIS //</strong> ${mission.hint}</div>`
-:"";
+if(!mission.hint){
+return "";
+}
+
+return `
+<div class="hint">
+<strong>HINWEIS //</strong>
+${mission.hint}
+</div>
+`;
 }
 
 function renderMission(){
 stopTask();
+
 locked=false;
 sequenceInput=[];
 
@@ -317,9 +545,12 @@ document.getElementById("missionLabel").textContent=
 `Sicherheitsstufe ${number} / 20`;
 document.getElementById("terminalId").textContent=
 `Terminal ${number}`;
-document.getElementById("missionTitle").textContent=mission.title;
-document.getElementById("missionBriefing").textContent=mission.briefing;
-document.getElementById("question").innerHTML=mission.question;
+document.getElementById("missionTitle").textContent=
+mission.title;
+document.getElementById("missionBriefing").textContent=
+mission.briefing;
+document.getElementById("question").innerHTML=
+mission.question;
 
 startTimer(mission);
 
@@ -333,13 +564,17 @@ aria-label="Antwort"
 placeholder="${mission.placeholder}"
 required
 >
-<button class="submit" aria-label="Bestätigen">→</button>
+<button class="submit" aria-label="Bestätigen">
+→
+</button>
 </div>
 ${hintHtml(mission)}
 `;
 
 requestAnimationFrame(()=>{
-document.getElementById("answer").focus({preventScroll:true});
+document
+.getElementById("answer")
+.focus({preventScroll:true});
 });
 }
 
@@ -347,7 +582,11 @@ if(mission.type==="choice"){
 answerArea.innerHTML=`
 <div class="choices">
 ${mission.choices.map(choice=>`
-<button class="choice" type="button" data-value="${choice}">
+<button
+class="choice"
+type="button"
+data-value="${choice}"
+>
 ${choice}
 </button>
 `).join("")}
@@ -355,8 +594,12 @@ ${choice}
 ${hintHtml(mission)}
 `;
 
-answerArea.querySelectorAll(".choice").forEach(button=>{
-button.onclick=()=>checkAnswer(button.dataset.value);
+answerArea
+.querySelectorAll(".choice")
+.forEach(button=>{
+button.onclick=()=>{
+checkAnswer(button.dataset.value);
+};
 });
 }
 
@@ -364,15 +607,24 @@ if(mission.type==="sequence"){
 answerArea.innerHTML=`
 <div class="sequence">
 ${mission.values.map(value=>`
-<button type="button" data-value="${value}">${value}</button>
+<button
+type="button"
+data-value="${value}"
+>
+${value}
+</button>
 `).join("")}
 </div>
 ${hintHtml(mission)}
 `;
 
-answerArea.querySelectorAll(".sequence button").forEach(button=>{
+answerArea
+.querySelectorAll(".sequence button")
+.forEach(button=>{
 button.onclick=()=>{
-if(button.classList.contains("selected"))return;
+if(button.classList.contains("selected")){
+return;
+}
 
 button.classList.add("selected");
 sequenceInput.push(button.dataset.value);
@@ -384,34 +636,56 @@ checkAnswer(sequenceInput);
 });
 }
 
-if(mission.type==="memory")renderMemory(mission);
-if(mission.type==="reaction")renderReaction(mission);
-if(mission.type==="runner")renderRunner(mission);
+if(mission.type==="memory"){
+renderMemory(mission);
+}
+
+if(mission.type==="reaction"){
+renderReaction(mission);
+}
+
+if(mission.type==="runner"){
+renderRunner(mission);
+}
 }
 
 function renderMemory(mission){
 answerArea.innerHTML=`
 <div class="memory-grid">
 ${[1,2,3,4,5,6].map((value,index)=>`
-<button class="memory-pad" type="button" data-i="${index}">◆</button>
+<button
+class="memory-pad"
+type="button"
+data-i="${index}"
+>
+◆
+</button>
 `).join("")}
 </div>
 ${hintHtml(mission)}
 `;
 
-const pads=[...answerArea.querySelectorAll(".memory-pad")];
+const pads=[
+...answerArea.querySelectorAll(".memory-pad")
+];
+
 let accepting=false;
 let entered=[];
 
 pads.forEach(pad=>{
 pad.onclick=()=>{
-if(!accepting)return;
+if(!accepting){
+return;
+}
 
 const value=Number(pad.dataset.i);
 entered.push(value);
+
 pad.classList.add("flash");
 
-setTimeout(()=>pad.classList.remove("flash"),150);
+setTimeout(()=>{
+pad.classList.remove("flash");
+},150);
 
 if(value!==mission.pattern[entered.length-1]){
 fail();
@@ -431,25 +705,37 @@ return;
 }
 
 const pad=pads[mission.pattern[index++]];
+
 pad.classList.add("flash");
 
-setTimeout(()=>pad.classList.remove("flash"),420);
+setTimeout(()=>{
+pad.classList.remove("flash");
+},420);
 },720);
 
-cleanupTask=()=>clearInterval(sequenceDisplay);
+cleanupTask=()=>{
+clearInterval(sequenceDisplay);
+};
 }
 
 function renderReaction(mission){
 answerArea.innerHTML=`
-<button type="button" class="reaction-zone">WARTEN …</button>
+<button type="button" class="reaction-zone">
+WARTEN …
+</button>
 ${hintHtml(mission)}
 `;
 
-const zone=answerArea.querySelector(".reaction-zone");
+const zone=
+answerArea.querySelector(".reaction-zone");
+
 let ready=false;
+
 const minimum=mission.delayMin||1700;
 const maximum=mission.delayMax||4000;
-const delay=minimum+Math.random()*(maximum-minimum);
+
+const delay=
+minimum+Math.random()*(maximum-minimum);
 
 const greenSignal=setTimeout(()=>{
 ready=true;
@@ -458,25 +744,43 @@ zone.textContent="JETZT!";
 },delay);
 
 zone.onclick=()=>{
-ready?advance():fail("Zu früh reagiert");
+if(ready){
+advance();
+}else{
+fail("Zu früh reagiert");
+}
 };
 
-cleanupTask=()=>clearTimeout(greenSignal);
+cleanupTask=()=>{
+clearTimeout(greenSignal);
+};
 }
 
 function renderRunner(mission){
 answerArea.innerHTML=`
 <div class="runner">
 <div class="agent">◆</div>
-<span class="runner-score">0 / ${mission.target}</span>
+<span class="runner-score">
+0 / ${mission.target}
+</span>
 </div>
-<button class="btn runner-help" type="button">Springen</button>
+<button
+class="btn runner-help"
+type="button"
+>
+Springen
+</button>
 ${hintHtml(mission)}
 `;
 
-const runner=answerArea.querySelector(".runner");
-const agent=answerArea.querySelector(".agent");
-const score=answerArea.querySelector(".runner-score");
+const runner=
+answerArea.querySelector(".runner");
+
+const agent=
+answerArea.querySelector(".agent");
+
+const score=
+answerArea.querySelector(".runner-score");
 
 let passed=0;
 let alive=true;
@@ -485,7 +789,9 @@ let obstacles=[];
 let spawner=null;
 
 jumpAction=()=>{
-if(!alive||jumping)return;
+if(!alive||jumping){
+return;
+}
 
 jumping=true;
 agent.classList.add("jump");
@@ -496,30 +802,51 @@ jumping=false;
 },620);
 };
 
-answerArea.querySelector(".runner-help").onclick=jumpAction;
-document.addEventListener("keydown",spaceJump);
+answerArea
+.querySelector(".runner-help")
+.onclick=jumpAction;
+
+document.addEventListener(
+"keydown",
+spaceJump
+);
 
 const spawnObstacle=()=>{
-if(!alive)return;
+if(!alive){
+return;
+}
 
-const obstacle=document.createElement("i");
+const obstacle=
+document.createElement("i");
+
 obstacle.className="obstacle";
+
 obstacle.style.animationDuration=
 `${1.55/(mission.speed||1)}s`;
 
 runner.appendChild(obstacle);
 obstacles.push(obstacle);
 
-obstacle.addEventListener("animationend",()=>{
+obstacle.addEventListener(
+"animationend",
+()=>{
 obstacle.remove();
-obstacles=obstacles.filter(item=>item!==obstacle);
+
+obstacles=obstacles.filter(item=>{
+return item!==obstacle;
+});
+
 passed++;
-score.textContent=`${passed} / ${mission.target}`;
+
+score.textContent=
+`${passed} / ${mission.target}`;
 
 if(passed>=mission.target){
 advance();
 }
-},{once:true});
+},
+{once:true}
+);
 };
 
 const firstSpawn=setTimeout(()=>{
@@ -532,10 +859,12 @@ spawnObstacle,
 },mission.startDelay||0);
 
 const collisionDetector=setInterval(()=>{
-const agentBox=agent.getBoundingClientRect();
+const agentBox=
+agent.getBoundingClientRect();
 
 obstacles.forEach(obstacle=>{
-const obstacleBox=obstacle.getBoundingClientRect();
+const obstacleBox=
+obstacle.getBoundingClientRect();
 
 const collision=
 agentBox.right>obstacleBox.left+4&&
@@ -557,7 +886,9 @@ clearInterval(collisionDetector);
 }
 
 function checkAnswer(value){
-if(locked)return;
+if(locked){
+return;
+}
 
 const mission=missions[current];
 let correct=false;
@@ -578,20 +909,31 @@ return item===mission.answer[index];
 });
 }
 
-correct?advance():fail();
+if(correct){
+advance();
+}else{
+fail();
+}
 }
 
 function advance(){
-if(locked)return;
+if(locked){
+return;
+}
 
 locked=true;
 stopTask();
+
 current++;
 updateProgress();
 
 if(current===missions.length){
 timerWrap.classList.remove("visible");
-document.getElementById("systemStatus").textContent="Tresor offen";
+
+document.getElementById(
+"systemStatus"
+).textContent="Tresor offen";
+
 showScreen("success");
 celebrate();
 }else{
@@ -600,11 +942,17 @@ setTimeout(renderMission,220);
 }
 
 function fail(reason="Falsche Antwort"){
-if(locked)return;
+if(locked){
+return;
+}
 
 locked=true;
 stopTask();
-document.getElementById("failureTitle").textContent=reason;
+
+document.getElementById(
+"failureTitle"
+).textContent=reason;
+
 terminal.classList.add("shake");
 
 setTimeout(()=>{
@@ -613,10 +961,16 @@ failure.classList.add("show");
 }
 
 function celebrate(){
-const colors=["#e3b955","#ffe39a","#9df7c4","#ffffff"];
+const colors=[
+"#e3b955",
+"#ffe39a",
+"#9df7c4",
+"#ffffff"
+];
 
 for(let index=0;index<100;index++){
-const confetti=document.createElement("i");
+const confetti=
+document.createElement("i");
 
 Object.assign(confetti.style,{
 position:"fixed",
@@ -633,7 +987,9 @@ document.body.appendChild(confetti);
 
 confetti.animate(
 [
-{transform:"translateY(0)"},
+{
+transform:"translateY(0)"
+},
 {
 transform:
 `translate(${(Math.random()-.5)*220}px,110vh) rotate(900deg)`
@@ -642,50 +998,80 @@ transform:
 {
 duration:2500+Math.random()*2500
 }
-).finished.then(()=>confetti.remove());
+).finished.then(()=>{
+confetti.remove();
+});
 }
 }
 
-document.getElementById("startButton").onclick=()=>{
+document.getElementById(
+"startButton"
+).onclick=()=>{
 current=0;
 updateProgress();
 showScreen("mission");
 renderMission();
 };
 
-document.getElementById("restartButton").onclick=()=>{
+document.getElementById(
+"restartButton"
+).onclick=()=>{
 failure.classList.remove("show");
 terminal.classList.remove("shake");
+
 current=0;
 updateProgress();
 showScreen("mission");
 renderMission();
 };
 
-document.getElementById("successVault").onclick=()=>{
-const vault=document.getElementById("successVault");
-const giftButton=document.getElementById("giftButton");
+function openSuccessVault(){
+const vault=
+document.getElementById("successVault");
 
-if(vault.classList.contains("open"))return;
+const giftButton=
+document.getElementById("giftButton");
+
+if(vault.classList.contains("open")){
+return;
+}
 
 vault.classList.add("open");
 vault.setAttribute("aria-expanded","true");
-vault.disabled=true;
+vault.removeAttribute("role");
+vault.removeAttribute("tabindex");
 
 setTimeout(()=>{
 giftButton.classList.add("visible");
 },2800);
+}
+
+document.getElementById(
+"successVault"
+).onclick=openSuccessVault;
+
+document.getElementById(
+"successVault"
+).onkeydown=event=>{
+if(event.key==="Enter"||event.key===" "){
+event.preventDefault();
+openSuccessVault();
+}
 };
 
-terminal.addEventListener("submit",event=>{
+terminal.addEventListener(
+"submit",
+event=>{
 event.preventDefault();
 
-const input=document.getElementById("answer");
+const input=
+document.getElementById("answer");
 
 if(input){
 checkAnswer(input.value);
 }
-});
+}
+);
 </script>
 </body>
 </html>
